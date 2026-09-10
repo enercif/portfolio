@@ -3,6 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { navigationLinks } from '$lib/navigation';
 	import ScrollNav from '$lib/ScrollNav.svelte';
+	import PageTransition from '$lib/PageTransition.svelte';
 	import './layout.css';
 
 	let { children } = $props();
@@ -30,4 +31,5 @@
 	</ul>
 </nav>
 <ScrollNav />
+<PageTransition />
 {@render children()}
