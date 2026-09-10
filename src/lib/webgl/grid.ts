@@ -182,6 +182,9 @@ export function createGrid(
 		type: 'x,y',
 		trigger: container,
 		inertia: true,
+		// Sonst schluckt Draggable das contextmenu-Event und schickt stattdessen
+		// einen synthetischen Klick – Rechtsklick würde ein Projekt öffnen.
+		allowContextMenu: true,
 		onPress: () => {
 			// Touch feuert kein pointermove vor dem Tap.
 			setPointer(draggable.pointerX, draggable.pointerY);
