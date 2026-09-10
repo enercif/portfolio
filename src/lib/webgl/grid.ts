@@ -10,6 +10,7 @@ import {
 	gapSize,
 	projectAt,
 	projectRows,
+	screenToWorld,
 	tileAt,
 	tilePosition,
 	tileSize,
@@ -20,6 +21,11 @@ gsap.registerPlugin(Draggable, InertiaPlugin);
 
 const REST = 0.2;
 const DRAGGED = 0.45;
+
+/** Wie stark die Kachel direkt unter dem Zeiger wächst … */
+const GROW = 0.125;
+/** … und wie weit die Anziehung reicht, in Kachelabständen. */
+const REACH = 1.8;
 
 /** Was das Raster von einem Projekt braucht – der Rest bleibt in Svelte. */
 type Tile = { title: string; image: string };
@@ -62,12 +68,15 @@ export function createGrid(
 	const uDistortion = { value: REST };
 	const uAspect = { value: 1 };
 
-	// Ein einziges Programm für alle Kacheln; tMap und uHover werden pro Mesh
-	// kurz vor dem Draw gesetzt, das spart N-1 Shader-Compiles.
+	// Ein einziges Programm für alle Kacheln; tMap wird pro Mesh kurz vor dem
+	// Draw gesetzt, das spart N-1 Shader-Compiles.
 	const program = new Program(gl, {
 		vertex,
 		fragment,
-		uniforms: { tMap: { value: textures[0] }, uHover: { value: 0 }, uDistortion, uAspect }
+		// Die runden Ecken sind transparent: ohne Blending stanzen sie schwarze
+		// Kerben in die Kachel dahinter, sobald eine gewachsene sie überlappt.
+		transparent: true,
+		uniforms: { tMap: { value: textures[0] }, uDistortion, uAspect }
 	});
 
 	const view: GridView = {
@@ -84,7 +93,8 @@ export function createGrid(
 	};
 
 	let meshes: Mesh[] = [];
-	let hoverAmount: number[] = [];
+	/** Aktueller Wachstumsfaktor je Instanz, gegen das Ziel gedämpft. */
+	let grown: number[] = [];
 	let hoveredTile = -1;
 	let dragging = false;
 	let inside = false;
@@ -97,21 +107,17 @@ export function createGrid(
 		if (cols === view.cols && rows === view.rows) return; // nur wachsen, nie neu bauen beim Verkleinern
 
 		for (const mesh of meshes) mesh.setParent(null);
-		gsap.killTweensOf(hoverAmount);
 		view.cols = cols;
 		view.rows = rows;
 		hoveredTile = -1; // Indizes verschieben sich, alter Hover ist ungültig
 		meshes = [];
-		hoverAmount = new Array(cols * rows).fill(0);
+		grown = new Array(cols * rows).fill(1);
 
 		for (let i = 0; i < cols * rows; i++) {
 			const project = projectAt(view, i);
 			const mesh = new Mesh(gl, { geometry, program });
 			mesh.scale.set(view.tile, view.tile, 1);
-			mesh.onBeforeRender(() => {
-				program.uniforms.tMap.value = textures[project];
-				program.uniforms.uHover.value = hoverAmount[i];
-			});
+			mesh.onBeforeRender(() => (program.uniforms.tMap.value = textures[project]));
 			mesh.setParent(scene);
 			meshes.push(mesh);
 		}
@@ -135,12 +141,7 @@ export function createGrid(
 		const next = dragging || !inside ? -1 : tileUnderPointer();
 		if (next === hoveredTile && !moved) return;
 
-		if (next !== hoveredTile) {
-			if (hoveredTile >= 0)
-				gsap.to(hoverAmount, { [hoveredTile]: 0, duration: 0.4, ease: 'power2.out' });
-			if (next >= 0) gsap.to(hoverAmount, { [next]: 1, duration: 0.4, ease: 'power2.out' });
-			hoveredTile = next;
-		}
+		hoveredTile = next;
 		onHover(next < 0 ? -1 : projectAt(view, next), pointerX, pointerY);
 	}
 
@@ -222,8 +223,34 @@ export function createGrid(
 		updateHover();
 	}
 
+	/**
+	 * Kacheln wachsen mit der Nähe zum Zeiger. Läuft pro Frame statt über gsap,
+	 * weil sich auch beim Ziehen jede Distanz ändert; die Dämpfung glättet
+	 * Zeigersprünge und das Auf- und Zuklappen beim Betreten und Verlassen.
+	 */
+	function grow() {
+		view.distortion = uDistortion.value;
+		const focus = inside && !dragging ? screenToWorld(view, pointerX, pointerY) : null;
+		const reach = view.spacing * REACH;
+
+		for (let i = 0; i < meshes.length; i++) {
+			const { position, scale } = meshes[i];
+			let target = 1;
+			if (focus) {
+				const d = Math.hypot(position.x - focus.x, position.y - focus.y) / reach;
+				if (d < 1) target = 1 + GROW * (1 - d * d) ** 2;
+			}
+
+			grown[i] += (target - grown[i]) * 0.15;
+			scale.set(view.tile * grown[i], view.tile * grown[i], 1);
+			// Gewachsene Kacheln nach vorn, sonst schneiden die Nachbarn sie an.
+			position.z = grown[i] - 1;
+		}
+	}
+
 	let frame = requestAnimationFrame(function render() {
 		frame = requestAnimationFrame(render);
+		grow();
 		renderer.render({ scene, camera });
 	});
 
@@ -238,7 +265,7 @@ export function createGrid(
 		container.removeEventListener('pointermove', onPointerMove);
 		container.removeEventListener('pointerleave', onPointerLeave);
 		draggable.kill();
-		gsap.killTweensOf([hoverAmount, uDistortion]);
+		gsap.killTweensOf(uDistortion);
 		// Sonst bleibt pro Mount ein GL-Kontext liegen und der Browser wirft ab
 		// etwa 16 Stück den ältesten weg – das Raster wird beim Zurücknavigieren schwarz.
 		gl.getExtension('WEBGL_lose_context')?.loseContext();
