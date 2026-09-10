@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
 	import { navigationLinks } from '$lib/navigation';
+	import ScrollNav from '$lib/ScrollNav.svelte';
 	import './layout.css';
 
 	let { children } = $props();
@@ -19,7 +20,7 @@
 				<a
 					href={link.href}
 					class={[
-						'rounded-full  px-3 py-2 transition-colors duration-150',
+						'rounded-full  px-3 py-2 text-nowrap transition-colors duration-150',
 						isActive && 'bg-white text-black',
 						!isActive && 'hover:bg-white/20'
 					]}>{link.name}</a
@@ -28,4 +29,5 @@
 		{/each}
 	</ul>
 </nav>
+<ScrollNav />
 {@render children()}
