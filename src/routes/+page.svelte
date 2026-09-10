@@ -39,13 +39,15 @@
 
 <div
 	bind:this={container}
-	class="relative h-dvh w-full touch-none overflow-hidden bg-black select-none"
+	class="relative h-lvh w-full touch-none overflow-hidden bg-black select-none"
 	class:cursor-pointer={hoveredProject >= 0}
 	class:cursor-grab={hoveredProject < 0}
 >
 	<canvas bind:this={canvas} class="absolute inset-0 h-full w-full"></canvas>
 
-	<div class="absolute bottom-16 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4">
+	<div
+		class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4 sm:bottom-16"
+	>
 		<div
 			class="absolute inset-0 -z-10 mask-[radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)]
            backdrop-blur
@@ -55,7 +57,11 @@
 		<h1 class="text-4xl font-bold tracking-wide text-nowrap text-white sm:bottom-40 sm:text-8xl">
 			{data.user.name}
 		</h1>
-		<img src={getDirectusAssetUrl(data.user.signature.id)} alt="Signature" class="-mt-8 h-48" />
+		<img
+			src={getDirectusAssetUrl(data.user.signature.id)}
+			alt="Signature"
+			class="-mt-6 h-30 sm:-mt-15 sm:h-48"
+		/>
 	</div>
 
 	{#if hoveredProject >= 0}
