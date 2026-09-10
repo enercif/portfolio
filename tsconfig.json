@@ -2,6 +2,8 @@
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
 		"rewriteRelativeImportExtensions": true,
+		// grid-math.check.ts läuft direkt mit `node`, das braucht die .ts-Endung im Import.
+		"allowImportingTsExtensions": true,
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
