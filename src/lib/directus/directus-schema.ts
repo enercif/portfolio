@@ -21,6 +21,15 @@ export interface ProjectsFile {
 	directus_files_id?: DirectusFile | string | null;
 }
 
+export interface Skill {
+	/** @primaryKey */
+	id: number;
+	/** @required */
+	group: string;
+	/** @required */
+	skills: Array<{ name: string; color: string }>;
+}
+
 export interface User {
 	/** @primaryKey */
 	id: number;
@@ -520,6 +529,7 @@ export interface DirectusDeploymentRun {
 export interface Schema {
 	projects: Project[];
 	projects_files: ProjectsFile[];
+	skills: Skill[];
 	user: User;
 	directus_access: DirectusAccess[];
 	directus_activity: DirectusActivity[];
@@ -555,6 +565,7 @@ export interface Schema {
 export enum CollectionNames {
 	projects = 'projects',
 	projects_files = 'projects_files',
+	skills = 'skills',
 	user = 'user',
 	directus_access = 'directus_access',
 	directus_activity = 'directus_activity',

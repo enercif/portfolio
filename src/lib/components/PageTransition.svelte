@@ -36,15 +36,15 @@
 				.set(lines, { yPercent: 110 })
 				.to(cols, {
 					yPercent: 0,
-					duration: 0.6,
+					duration: 0.5,
 					ease: 'power3.inOut',
 					stagger: { each: lead, from: 'center' }
 				})
 				.to(lines, { yPercent: 0, duration: 0.5, ease: 'power3.out', stagger: 0.06 }, '-=0.1')
-				.to(lines, { yPercent: -110, duration: 0.45, ease: 'power3.in', stagger: 0.06 }, '+=0.5')
+				.to(lines, { yPercent: -110, duration: 0.25, ease: 'power3.in', stagger: 0.06 }, '+=0.5')
 				// Seite wird unter der Farbwand getauscht
 				.add(resolve as gsap.Callback)
-				.to(root, { yPercent: -100, duration: 0.7, ease: 'power3.inOut' }, '+=0.25')
+				.to(root, { yPercent: -100, duration: 0.5, ease: 'power3.inOut' }, '+=0.25')
 				.set(root, { autoAlpha: 0 });
 		});
 	});
