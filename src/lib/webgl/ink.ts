@@ -18,8 +18,55 @@ const AMOUNT = 0.42;
 const LEAD = 1.5;
 /** Wie stark ein Tropfen pro Frame abgebremst wird. */
 const DRAG = 0.93;
+/** Ruhe in ms, nach der die Tinte von selbst weiterzeichnet. */
+const IDLE = 4000;
+
+/** Haelt einen Strich vom Rand weg, sonst zeichnet die Automatik ins Nichts. */
+const inside = gsap.utils.clamp(0.12, 0.88);
 
 type Drop = { x: number; y: number; vx: number; vy: number; radius: number; life: number };
+/** Ein automatischer Strich als quadratische Bezierkurve a -> c -> b. */
+type Stroke = {
+	ax: number;
+	ay: number;
+	bx: number;
+	by: number;
+	cx: number;
+	cy: number;
+	t: number;
+	speed: number;
+};
+
+export function newStroke(random = Math.random): Stroke {
+	const ax = inside(random());
+	const ay = inside(random());
+	const angle = random() * Math.PI * 2;
+	const length = 0.3 + random() * 0.4;
+	const bx = inside(ax + Math.cos(angle) * length);
+	const by = inside(ay + Math.sin(angle) * length);
+	// Kontrollpunkt quer zur Strecke versetzt: aus der Geraden wird ein Schwung.
+	const bend = (random() - 0.5) * 0.5;
+	return {
+		ax,
+		ay,
+		bx,
+		by,
+		cx: (ax + bx) / 2 - (by - ay) * bend,
+		cy: (ay + by) / 2 + (bx - ax) * bend,
+		t: 0,
+		speed: 0.012 + random() * 0.01
+	};
+}
+
+/** Punkt auf dem Strich, weich an- und abschwellend statt mit voller Fahrt. */
+export function strokeAt(s: Stroke, t: number) {
+	const e = t * t * (3 - 2 * t);
+	const u = 1 - e;
+	return {
+		x: u * u * s.ax + 2 * u * e * s.cx + e * e * s.bx,
+		y: u * u * s.ay + 2 * u * e * s.cy + e * e * s.by
+	};
+}
 
 /** Sichtfeld der Videotextur, damit sie das Canvas füllt statt zu verzerren. */
 function cover(video: HTMLVideoElement, aspect: number) {
@@ -174,6 +221,38 @@ export function createInk(
 		moved = true;
 	}
 
+	let idle = 0;
+	let stroke: Stroke | null = null;
+	let gap = 0;
+
+	/** Zeichnet ohne Zeiger weiter, damit das Bild in Ruhe nicht tot daliegt. */
+	function autoDraw(step: number) {
+		if (!stroke) {
+			gap -= step;
+			if (gap > 0) return;
+			stroke = newStroke();
+			// Am Anfang aufsetzen statt vom letzten Zeigerpunkt herzuschleudern.
+			pointer.x = stroke.ax;
+			pointer.y = stroke.ay;
+			pointer.vx = 0;
+			pointer.vy = 0;
+		}
+
+		stroke.t += stroke.speed * step;
+		if (stroke.t >= 1) {
+			stroke = null;
+			gap = 100 + Math.random() * 100; // Frames Pause bis zum naechsten Strich
+			return onLift();
+		}
+
+		const { x, y } = strokeAt(stroke, stroke.t);
+		pointer.vx = x - pointer.x;
+		pointer.vy = y - pointer.y;
+		pointer.x = x;
+		pointer.y = y;
+		moved = true;
+	}
+
 	function emit() {
 		const speed = Math.hypot(pointer.vx, pointer.vy);
 
@@ -213,6 +292,15 @@ export function createInk(
 			// Jeden Frame: videoWidth steht erst nach den Metadaten, und das Format
 			// kann beim Loop-Wechsel wechseln.
 			uCover.value.set(cover(video, uAspect.value));
+		}
+
+		if (moved) {
+			// Echte Eingabe schlaegt die Automatik und bricht den laufenden Strich ab.
+			idle = 0;
+			stroke = null;
+		} else {
+			idle += delta;
+			if (idle > IDLE) autoDraw(step);
 		}
 
 		if (moved) emit();
