@@ -23,7 +23,7 @@
 	}
 </script>
 
-<svelte:head><title>Contact — Enis Erdem Ciftci</title></svelte:head>
+<svelte:head><title>Contact - Enis Erdem Ciftci</title></svelte:head>
 
 <div class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
 	<canvas bind:this={canvas} class="pointer-events-none absolute inset-0 h-full w-full"></canvas>

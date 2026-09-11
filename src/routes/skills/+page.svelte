@@ -55,7 +55,7 @@
 		e.pointerType !== 'mouse' && activate(active === i ? -1 : i);
 </script>
 
-<svelte:head><title>Skills — Enis Erdem Ciftci</title></svelte:head>
+<svelte:head><title>Skills - Enis Erdem Ciftci</title></svelte:head>
 
 <div bind:this={root} class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
 	<div

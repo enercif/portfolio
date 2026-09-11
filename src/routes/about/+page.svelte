@@ -31,7 +31,7 @@
 	});
 </script>
 
-<svelte:head><title>About — Enis Erdem Ciftci</title></svelte:head>
+<svelte:head><title>About - Enis Erdem Ciftci</title></svelte:head>
 
 <div class="flex h-dvh w-full flex-col bg-white md:flex-row dark:bg-black">
 	<div bind:this={stage} class="relative h-1/2 touch-none overflow-hidden md:h-full md:w-1/2">

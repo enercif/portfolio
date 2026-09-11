@@ -35,7 +35,7 @@
 	});
 </script>
 
-<svelte:head><title>Enis Erdem Ciftci</title></svelte:head>
+<svelte:head><title>Home - Enis Erdem Ciftci</title></svelte:head>
 
 <div
 	bind:this={container}
