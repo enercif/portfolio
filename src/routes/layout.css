@@ -1,1 +1,16 @@
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Der Kreis clippt die neue Ansicht ueber der alten, deshalb kein Cross-Fade */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+	z-index: 0;
+}
+::view-transition-new(root) {
+	z-index: 1;
+}

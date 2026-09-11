@@ -57,7 +57,7 @@
 
 <svelte:head><title>Skills — Enis Erdem Ciftci</title></svelte:head>
 
-<div bind:this={root} class="relative h-dvh w-full overflow-hidden bg-black">
+<div bind:this={root} class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
 	<div
 		class="absolute top-1/2 left-1/2 flex w-[150vw] -translate-x-1/2 -translate-y-1/2 rotate-[-10deg] flex-col gap-10 sm:gap-18"
 	>
@@ -76,7 +76,7 @@
 					{#each COPIES as copy (copy)}
 						<div class="flex items-center gap-10" aria-hidden={copy > 0}>
 							<span
-								class="rounded-full border border-white/40 px-6 py-2 text-[clamp(0.8rem,1.4vw,1.4rem)] font-medium tracking-[0.3em] text-white/60 uppercase"
+								class="rounded-full border border-black/40 px-6 py-2 text-[clamp(0.8rem,1.4vw,1.4rem)] font-medium tracking-[0.3em] text-black/60 uppercase dark:border-white/40 dark:text-white/60"
 								>{group}</span
 							>
 							{#each skills as { name, color } (name)}

@@ -56,7 +56,8 @@ export function createPoints(canvas: HTMLCanvasElement, text: string) {
 		const cx = w / 2;
 		const cy = h / 2;
 		ctx.clearRect(0, 0, w, h);
-		ctx.fillStyle = '#fff';
+		// billiger als getComputedStyle pro Frame
+		ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#fff' : '#000';
 
 		for (const p of dots) {
 			const dx0 = p.ox - cx;

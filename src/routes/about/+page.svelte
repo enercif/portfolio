@@ -33,7 +33,7 @@
 
 <svelte:head><title>About — Enis Erdem Ciftci</title></svelte:head>
 
-<div class="flex h-dvh w-full flex-col bg-black md:flex-row">
+<div class="flex h-dvh w-full flex-col bg-white md:flex-row dark:bg-black">
 	<div bind:this={stage} class="relative h-1/2 touch-none overflow-hidden md:h-full md:w-1/2">
 		<!-- Beide Videos bleiben im Layout, sonst pausiert Safari die Dekodierung.
 		     Sichtbar ist im WebGL-Fall nur noch das Canvas darueber. -->
@@ -67,10 +67,10 @@
 	</div>
 
 	<section
-		class="flex flex-1 flex-col gap-12 overflow-y-auto px-6 py-10 text-white md:justify-center md:px-14 md:py-16"
+		class="flex flex-1 flex-col gap-12 overflow-y-auto px-6 py-10 text-black md:justify-center md:px-14 md:py-16 dark:text-white"
 	>
 		<div
-			class="order-1 max-w-prose text-base leading-relaxed text-white/90 md:order-2 md:text-lg [&_a]:underline [&_p+p]:mt-4"
+			class="order-1 max-w-prose text-base leading-relaxed text-black/90 md:order-2 md:text-lg dark:text-white/90 [&_a]:underline [&_p+p]:mt-4"
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html data.user.description}
@@ -78,17 +78,17 @@
 
 		<ol class="order-2 flex flex-col md:order-1">
 			{#each data.experience as job (job.id)}
-				<li class="border-t border-white/15 py-5 last:border-b">
+				<li class="border-t border-black/15 py-5 last:border-b dark:border-white/15">
 					<div class="flex flex-row items-center justify-between">
 						<h2 class="mt-1 text-xl font-semibold md:text-2xl">{job.name}</h2>
-						<p class="font-mono text-xs tracking-wider text-white/75">
+						<p class="font-mono text-xs tracking-wider text-black/75 dark:text-white/75">
 							{period(job.start, job.end)}
 						</p>
 					</div>
 
-					<p class="text-sm text-white/60 md:text-base">{job.position}</p>
+					<p class="text-sm text-black/60 md:text-base dark:text-white/60">{job.position}</p>
 					{#if job.description}
-						<div class="mt-2 max-w-prose text-sm text-white/50 [&_p+p]:mt-2">
+						<div class="mt-2 max-w-prose text-sm text-black/50 dark:text-white/50 [&_p+p]:mt-2">
 							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 							{@html job.description}
 						</div>

@@ -25,19 +25,21 @@
 
 <svelte:head><title>Contact — Enis Erdem Ciftci</title></svelte:head>
 
-<div class="relative h-dvh w-full overflow-hidden bg-black">
+<div class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
 	<canvas bind:this={canvas} class="pointer-events-none absolute inset-0 h-full w-full"></canvas>
 
 	<h1 class="sr-only">Ready to talk?</h1>
 
 	<button
 		onclick={copy}
-		class="absolute top-[65%] left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/40 px-6 py-2 text-sm tracking-[0.2em] text-white/70 uppercase transition-colors hover:border-white hover:text-white"
+		class="absolute top-[65%] left-1/2 z-40 -translate-x-1/2 rounded-full border border-black/40 px-6 py-2 text-sm tracking-[0.2em] text-black/70 uppercase transition-colors hover:border-black hover:text-black dark:border-white/40 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
 	>
 		{copied ? 'Copied' : data.user.email}
 	</button>
 
-	<footer class="absolute bottom-6 w-full text-center text-xs tracking-wide text-white/30">
+	<footer
+		class="absolute bottom-6 w-full text-center text-xs tracking-wide text-black/30 dark:text-white/30"
+	>
 		Designed &amp; built by {data.user.name}
 	</footer>
 </div>

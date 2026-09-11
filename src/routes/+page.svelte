@@ -39,7 +39,7 @@
 
 <div
 	bind:this={container}
-	class="relative h-dvh w-full touch-none overflow-hidden bg-black select-none"
+	class="relative h-dvh w-full touch-none overflow-hidden bg-white select-none dark:bg-black"
 	class:cursor-pointer={hoveredProject >= 0}
 	class:cursor-grab={hoveredProject < 0}
 >
@@ -54,7 +54,9 @@
            [-webkit-mask-image:radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)]"
 		></div>
 
-		<h1 class="text-4xl font-bold tracking-wide text-nowrap text-white sm:bottom-40 sm:text-8xl">
+		<h1
+			class="text-4xl font-bold tracking-wide text-nowrap text-black sm:bottom-40 sm:text-8xl dark:text-white"
+		>
 			{data.user.name}
 		</h1>
 		<img
@@ -66,7 +68,7 @@
 
 	{#if hoveredProject >= 0}
 		<span
-			class="pointer-events-none absolute top-0 left-0 text-xl font-medium text-white mix-blend-difference"
+			class="pointer-events-none absolute top-0 left-0 text-xl font-medium text-black mix-blend-difference dark:text-white"
 			style="transform: translate({pointer.x + 8}px, {pointer.y + 8}px)"
 		>
 			{projects[hoveredProject].title}

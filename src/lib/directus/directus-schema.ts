@@ -91,7 +91,12 @@ export interface DirectusCollection {
 	display_template?: string | null;
 	hidden?: boolean;
 	singleton?: boolean;
-	translations?: Array<{ language: string; translation: string; singular: string; plural: string }> | null;
+	translations?: Array<{
+		language: string;
+		translation: string;
+		singular: string;
+		plural: string;
+	}> | null;
 	archive_field?: string | null;
 	archive_app_filter?: boolean;
 	archive_value?: string | null;
@@ -294,12 +299,31 @@ export interface DirectusSettings {
 	public_background?: DirectusFile | string | null;
 	public_note?: string | null;
 	auth_login_attempts?: number | null;
-	auth_password_policy?: null | `/^.{8,}$/` | `/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/` | null;
+	auth_password_policy?:
+		| null
+		| `/^.{8,}$/`
+		| `/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/`
+		| null;
 	storage_asset_transform?: 'all' | 'none' | 'presets' | null;
-	storage_asset_presets?: Array<{ key: string; fit: 'contain' | 'cover' | 'inside' | 'outside'; width: number; height: number; quality: number; withoutEnlargement: boolean; format: 'auto' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif'; transforms: 'json' }> | null;
+	storage_asset_presets?: Array<{
+		key: string;
+		fit: 'contain' | 'cover' | 'inside' | 'outside';
+		width: number;
+		height: number;
+		quality: number;
+		withoutEnlargement: boolean;
+		format: 'auto' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
+		transforms: 'json';
+	}> | null;
 	custom_css?: string | null;
 	storage_default_folder?: DirectusFolder | string | null;
-	basemaps?: Array<{ name: string; type: 'raster' | 'tile' | 'style'; url: string; tileSize: number; attribution: string }> | null;
+	basemaps?: Array<{
+		name: string;
+		type: 'raster' | 'tile' | 'style';
+		url: string;
+		tileSize: number;
+		attribution: string;
+	}> | null;
 	mapbox_key?: string | null;
 	module_bar?: 'json' | null;
 	project_descriptor?: string | null;
@@ -337,11 +361,46 @@ export interface DirectusSettings {
 	ai_openai_compatible_api_key?: string | null;
 	ai_openai_compatible_base_url?: string | null;
 	ai_openai_compatible_name?: string | null;
-	ai_openai_compatible_models?: Array<{ id: string; name: string; context: number; output: number; attachment: boolean; reasoning: boolean; providerOptions: Record<string, any> }> | null;
+	ai_openai_compatible_models?: Array<{
+		id: string;
+		name: string;
+		context: number;
+		output: number;
+		attachment: boolean;
+		reasoning: boolean;
+		providerOptions: Record<string, any>;
+	}> | null;
 	ai_openai_compatible_headers?: Array<{ header: string; value: string }> | null;
-	ai_openai_allowed_models?: Array<`gpt-4o-mini` | `gpt-4.1-nano` | `gpt-4.1-mini` | `gpt-4.1` | `gpt-5-nano` | `gpt-5-mini` | `gpt-5` | `gpt-5.2` | `gpt-5.2-chat-latest` | `gpt-5.2-pro` | `gpt-5.4` | `gpt-5.4-pro`> | null;
-	ai_anthropic_allowed_models?: Array<`claude-haiku-4-5` | `claude-sonnet-4-5` | `claude-opus-4-5` | `claude-sonnet-4-6` | `claude-opus-4-6`> | null;
-	ai_google_allowed_models?: Array<`gemini-3-pro-preview` | `gemini-3-flash-preview` | `gemini-2.5-pro` | `gemini-2.5-flash` | `gemini-3.1-pro-preview` | `gemini-3.1-flash-lite-preview` | `gemini-2.5-flash-lite`> | null;
+	ai_openai_allowed_models?: Array<
+		| `gpt-4o-mini`
+		| `gpt-4.1-nano`
+		| `gpt-4.1-mini`
+		| `gpt-4.1`
+		| `gpt-5-nano`
+		| `gpt-5-mini`
+		| `gpt-5`
+		| `gpt-5.2`
+		| `gpt-5.2-chat-latest`
+		| `gpt-5.2-pro`
+		| `gpt-5.4`
+		| `gpt-5.4-pro`
+	> | null;
+	ai_anthropic_allowed_models?: Array<
+		| `claude-haiku-4-5`
+		| `claude-sonnet-4-5`
+		| `claude-opus-4-5`
+		| `claude-sonnet-4-6`
+		| `claude-opus-4-6`
+	> | null;
+	ai_google_allowed_models?: Array<
+		| `gemini-3-pro-preview`
+		| `gemini-3-flash-preview`
+		| `gemini-2.5-pro`
+		| `gemini-2.5-flash`
+		| `gemini-3.1-pro-preview`
+		| `gemini-3.1-flash-lite-preview`
+		| `gemini-2.5-flash-lite`
+	> | null;
 	collaborative_editing_enabled?: boolean;
 }
 
