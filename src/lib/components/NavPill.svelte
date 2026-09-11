@@ -34,7 +34,7 @@
 </script>
 
 <nav
-	class="fixed top-14 left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-2 backdrop-blur-3xl sm:py-3 dark:bg-gray-800/75"
+	class="fixed top-14 left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-2 backdrop-blur-3xl sm:px-3 sm:py-3 dark:bg-gray-800/75"
 >
 	<ul class="flex flex-row items-center gap-1 text-black sm:gap-2 dark:text-white">
 		{#each navigationLinks as link (link.href)}
