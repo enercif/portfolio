@@ -6,7 +6,14 @@ export const getProjects = query(async () => {
 	const directus = getDirectusInstancePrivate();
 	return await directus.request(
 		readItems('projects', {
-			fields: ['id', 'name', 'slug', 'tags', 'description', { thumbnail: ['id'] }]
+			fields: [
+				'id',
+				'name',
+				'link',
+				'tags',
+				'description',
+				{ images: [{ directus_files_id: ['id'] }] }
+			]
 		})
 	);
 });

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { navigationLinks } from '$lib/navigation';
+	import { scrollState } from '$lib/state/scroll.state.svelte';
 
 	// wheel pixels needed to fill the circle
 	const THRESHOLD = 500;
@@ -23,6 +24,7 @@
 	}
 
 	function onwheel(e: WheelEvent) {
+		if (!scrollState.active) return;
 		if (busy || index < 0) return;
 		const d = Math.sign(e.deltaY);
 		const el = document.documentElement;

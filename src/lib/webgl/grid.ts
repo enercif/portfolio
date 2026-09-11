@@ -28,7 +28,7 @@ const GROW = 0.125;
 const REACH = 1.8;
 
 /** Was das Raster von einem Projekt braucht – der Rest bleibt in Svelte. */
-type Tile = { title: string; image: string };
+type Tile = { title: string; images: string[] };
 
 type Callbacks = {
 	/** Projekt unter dem Zeiger (-1 = keins) und dessen Position im Container. */
@@ -54,15 +54,22 @@ export function createGrid(
 	const scene = new Transform();
 
 	const geometry = new Plane(gl, { widthSegments: 16, heightSegments: 16 });
-	const textures = projects.map(({ image, title }) => {
-		const texture = new Texture(gl);
-		const img = new Image();
-		img.crossOrigin = 'anonymous';
-		img.onload = () => (texture.image = img);
-		img.onerror = () => console.warn(`Bild nicht geladen: ${title}`);
-		img.src = image;
+
+	// Geteilt ueber alle Instanzen: dasselbe Bild wird nur einmal geladen.
+	const textures = new Map<string, Texture>();
+	function textureFor(url: string) {
+		let texture = textures.get(url);
+		if (!texture) {
+			texture = new Texture(gl);
+			const img = new Image();
+			img.crossOrigin = 'anonymous';
+			img.onload = () => (texture!.image = img);
+			img.onerror = () => console.warn(`Bild nicht geladen: ${url}`);
+			img.src = url;
+			textures.set(url, texture);
+		}
 		return texture;
-	});
+	}
 
 	// Von gsap getweent, vom Shader und vom Hit-Test gelesen.
 	const uDistortion = { value: REST };
@@ -76,7 +83,7 @@ export function createGrid(
 		// Die runden Ecken sind transparent: ohne Blending stanzen sie schwarze
 		// Kerben in die Kachel dahinter, sobald eine gewachsene sie überlappt.
 		transparent: true,
-		uniforms: { tMap: { value: textures[0] }, uDistortion, uAspect }
+		uniforms: { tMap: { value: new Texture(gl) }, uDistortion, uAspect }
 	});
 
 	const view: GridView = {
@@ -114,10 +121,12 @@ export function createGrid(
 		grown = new Array(cols * rows).fill(1);
 
 		for (let i = 0; i < cols * rows; i++) {
-			const project = projectAt(view, i);
+			const { images: thumbnails } = projects[projectAt(view, i)];
+			// Jede Instanz zieht ihr eigenes Bild, sonst sieht dasselbe Projekt ueberall gleich aus.
+			const texture = textureFor(thumbnails[Math.floor(Math.random() * thumbnails.length)]);
 			const mesh = new Mesh(gl, { geometry, program });
 			mesh.scale.set(view.tile, view.tile, 1);
-			mesh.onBeforeRender(() => (program.uniforms.tMap.value = textures[project]));
+			mesh.onBeforeRender(() => (program.uniforms.tMap.value = texture));
 			mesh.setParent(scene);
 			meshes.push(mesh);
 		}
