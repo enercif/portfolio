@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { navigationLinks } from '$lib/navigation';
-	import { mode, toggleMode } from 'mode-watcher';
-	import Sun from '@lucide/svelte/icons/sun';
 	import Moon from '@lucide/svelte/icons/moon';
+	import Sun from '@lucide/svelte/icons/sun';
+	import { mode, toggleMode } from 'mode-watcher';
 	import { tick } from 'svelte';
 
 	async function toggle(e: MouseEvent) {
@@ -34,27 +34,27 @@
 </script>
 
 <nav
-	class="fixed top-14 left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-3 backdrop-blur-3xl dark:bg-gray-800/75"
+	class="fixed top-14 left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-2 backdrop-blur-3xl sm:py-3 dark:bg-gray-800/75"
 >
-	<ul class="flex flex-row items-center gap-2 text-black dark:text-white">
+	<ul class="flex flex-row items-center gap-1 text-black sm:gap-2 dark:text-white">
 		{#each navigationLinks as link (link.href)}
 			{@const isActive = page.url.pathname === link.href}
 			<li>
 				<a
 					href={link.href}
 					class={[
-						'rounded-full  px-3 py-2 text-nowrap transition-colors duration-150',
+						'rounded-full  px-3 py-2 text-sm text-nowrap transition-colors duration-150 sm:text-base',
 						isActive && 'bg-black text-white dark:bg-white dark:text-black',
 						!isActive && 'hover:bg-black/10 dark:hover:bg-white/20'
 					]}>{link.name}</a
 				>
 			</li>
 		{/each}
-		<li class="ml-1 border-l border-black/15 pl-1 dark:border-white/15">
+		<li class="mx-1 border-l border-black/15 dark:border-white/15">
 			<button
 				onclick={toggle}
 				aria-label={mode.current === 'dark' ? 'Light mode' : 'Dark mode'}
-				class="block rounded-full p-2 transition-colors duration-150 hover:bg-black/10 dark:hover:bg-white/20"
+				class="ml-1 block rounded-full p-2 transition-colors duration-150 hover:bg-black/10 dark:hover:bg-white/20"
 			>
 				{#if mode.current === 'dark'}
 					<Sun size={20} />
