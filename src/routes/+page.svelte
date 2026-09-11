@@ -39,7 +39,7 @@
 
 <div
 	bind:this={container}
-	class="relative h-lvh w-full touch-none overflow-hidden bg-black select-none"
+	class="relative h-dvh w-full touch-none overflow-hidden bg-black select-none"
 	class:cursor-pointer={hoveredProject >= 0}
 	class:cursor-grab={hoveredProject < 0}
 >

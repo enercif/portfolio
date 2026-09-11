@@ -6,7 +6,8 @@ export const getExperience = query(async () => {
 	const directus = getDirectusInstancePrivate();
 	return await directus.request(
 		readItems('experience', {
-			fields: ['name', 'position', 'id', 'description', 'start', 'end']
+			fields: ['name', 'position', 'id', 'description', 'start', 'end'],
+			sort: ['-start']
 		})
 	);
 });

@@ -12,10 +12,16 @@
 	let under: HTMLVideoElement;
 	let inked = $state(false);
 
+	// muted als Attribut reicht nicht: nach der Hydration ist die Property nicht
+	// zuverlaessig gesetzt, Firefox blockt den Autoplay dann weg.
 	const play = (v: HTMLVideoElement) => {
 		v.muted = true;
 		v.play().catch(() => {});
 	};
+
+	const df = new Intl.DateTimeFormat('de-DE', { month: 'short', year: 'numeric' });
+	const period = (start: string, end?: string | null) =>
+		`${df.format(new Date(start))} – ${end ? df.format(new Date(end)) : 'Heute'}`;
 
 	onMount(() => {
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -27,8 +33,10 @@
 
 <svelte:head><title>About — Enis Erdem Ciftci</title></svelte:head>
 
-<div class="flex h-lvh w-full flex-col bg-black md:flex-row">
-	<div bind:this={stage} class="relative h-[50svh] touch-none overflow-hidden md:h-full md:w-1/2">
+<div class="flex h-dvh w-full flex-col bg-black md:flex-row">
+	<div bind:this={stage} class="relative h-1/2 touch-none overflow-hidden md:h-full md:w-1/2">
+		<!-- Beide Videos bleiben im Layout, sonst pausiert Safari die Dekodierung.
+		     Sichtbar ist im WebGL-Fall nur noch das Canvas darueber. -->
 		<video
 			bind:this={over}
 			class={['absolute inset-0 h-full w-full object-cover', inked && 'opacity-0']}
@@ -57,4 +65,36 @@
 			aria-hidden="true"
 		></canvas>
 	</div>
+
+	<section
+		class="flex flex-1 flex-col gap-12 overflow-y-auto px-6 py-10 text-white md:justify-center md:px-14 md:py-16"
+	>
+		<div
+			class="order-1 max-w-prose text-base leading-relaxed text-white/90 md:order-2 md:text-lg [&_a]:underline [&_p+p]:mt-4"
+		>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html data.user.description}
+		</div>
+
+		<ol class="order-2 flex flex-col md:order-1">
+			{#each data.experience as job (job.id)}
+				<li class="border-t border-white/15 py-5 last:border-b">
+					<div class="flex flex-row items-center justify-between">
+						<h2 class="mt-1 text-xl font-semibold md:text-2xl">{job.name}</h2>
+						<p class="font-mono text-xs tracking-wider text-white/75">
+							{period(job.start, job.end)}
+						</p>
+					</div>
+
+					<p class="text-sm text-white/60 md:text-base">{job.position}</p>
+					{#if job.description}
+						<div class="mt-2 max-w-prose text-sm text-white/50 [&_p+p]:mt-2">
+							<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+							{@html job.description}
+						</div>
+					{/if}
+				</li>
+			{/each}
+		</ol>
+	</section>
 </div>
