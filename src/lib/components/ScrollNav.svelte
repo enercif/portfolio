@@ -4,7 +4,7 @@
 	import { navigationLinks } from '$lib/navigation';
 
 	// wheel pixels needed to fill the circle
-	const THRESHOLD = 700;
+	const THRESHOLD = 500;
 	const R = 60;
 	const C = 2 * Math.PI * R;
 

@@ -1,3 +1,16 @@
+export interface Experience {
+	/** @primaryKey */
+	id: number;
+	/** @required */
+	name: string;
+	description?: string | null;
+	/** @required */
+	position: string;
+	/** @required */
+	start: string;
+	end?: string | null;
+}
+
 export interface Project {
 	/** @primaryKey */
 	id: string;
@@ -37,6 +50,14 @@ export interface User {
 	name: string;
 	/** @required */
 	signature: DirectusFile | string;
+	/** @required */
+	email: string;
+	/** @required */
+	overlay: DirectusFile | string;
+	/** @required */
+	underlay: DirectusFile | string;
+	/** @required */
+	description: string;
 }
 
 export interface DirectusAccess {
@@ -527,6 +548,7 @@ export interface DirectusDeploymentRun {
 }
 
 export interface Schema {
+	experience: Experience[];
 	projects: Project[];
 	projects_files: ProjectsFile[];
 	skills: Skill[];
@@ -563,6 +585,7 @@ export interface Schema {
 }
 
 export enum CollectionNames {
+	experience = 'experience',
 	projects = 'projects',
 	projects_files = 'projects_files',
 	skills = 'skills',

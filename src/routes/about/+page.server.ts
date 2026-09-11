@@ -1,8 +1,8 @@
-import { getProjects } from '$lib/remote/project.remote';
+import { getExperience } from '$lib/remote/experience.remote';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	return {
-		projects: await getProjects()
+		experience: await getExperience()
 	};
 };

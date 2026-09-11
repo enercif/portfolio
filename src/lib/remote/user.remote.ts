@@ -6,7 +6,14 @@ export const getUser = query(async () => {
 	const directus = getDirectusInstancePrivate();
 	return await directus.request(
 		readSingleton('user', {
-			fields: ['name', { signature: ['id'] }]
+			fields: [
+				'name',
+				'email',
+				'description',
+				{ signature: ['id'] },
+				{ overlay: ['id'] },
+				{ underlay: ['id'] }
+			]
 		})
 	);
 });
