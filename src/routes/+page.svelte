@@ -2,7 +2,7 @@
 	import { getDirectusAssetUrl } from '$lib/directus/directus';
 	import { scrollState } from '$lib/state/scroll.state.svelte';
 	import { createGrid } from '$lib/webgl/grid';
-	import SquareArrowOutUpRight from '@lucide/svelte/icons/square-arrow-out-up-right';
+	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import XIcon from '@lucide/svelte/icons/x';
 	import { watch } from 'runed';
 	import { onMount } from 'svelte';
@@ -16,15 +16,17 @@
 				const ids = (images ?? []).flatMap(({ directus_files_id: file }) =>
 					file && typeof file === 'object' ? [file.id] : []
 				);
+				const asset = (id: string, size: number) =>
+					`${getDirectusAssetUrl(id)}?width=${size}&height=${size}&fit=cover&format=webp`;
 				return {
 					id,
 					title: name,
 					tags,
 					link,
 					description,
-					images: ids.map(
-						(id) => `${getDirectusAssetUrl(id)}?width=600&height=600&fit=cover&format=webp`
-					)
+					images: ids.map((id) => asset(id, 600)),
+					large: ids.map((id) => asset(id, 1400)),
+					thumbs: ids.map((id) => asset(id, 300))
 				};
 			})
 			.filter(({ images }) => images.length)
@@ -36,11 +38,43 @@
 
 	let hoveredProject = $state(-1);
 	let openProject = $state(-1);
+	let openImage = $state(0);
 	let pointer = $state({ x: 0, y: 0 });
+	let thumbs = $state<HTMLDivElement>();
 
-	function open(project: number) {
+	// Dialog oeffnet/schliesst als Kreis vom Klickpunkt, wie der Seitenwechsel
+	let origin = '50% 50%';
+	const circle = (r: string) => `circle(${r} at ${origin})`;
+	const reveal = (from: string, to: string) =>
+		dialog.animate(
+			{ clipPath: [circle(from), circle(to)] },
+			{
+				duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600,
+				easing: 'cubic-bezier(.7,0,.2,1)'
+			}
+		);
+
+	function open(project: number, from?: { x: number; y: number }) {
 		openProject = project;
+		openImage = 0;
+		origin = from ? `${from.x}px ${from.y}px` : '50% 50%';
 		dialog.showModal();
+		dialog.scrollTop = 0;
+		reveal('0', '150vmax');
+	}
+
+	function close() {
+		reveal('150vmax', '0').onfinish = () => dialog.close();
+	}
+
+	function showImage(i: number) {
+		const count = projects[openProject].large.length;
+		openImage = (i + count) % count;
+		thumbs?.children[openImage]?.scrollIntoView({
+			block: 'nearest',
+			inline: 'nearest',
+			behavior: 'smooth'
+		});
 	}
 
 	onMount(() => {
@@ -50,7 +84,7 @@
 				hoveredProject = project;
 				pointer = { x, y };
 			},
-			onSelect: open
+			onSelect: (project) => open(project, pointer)
 		});
 	});
 
@@ -116,54 +150,108 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (openProject = -1)}
-	class="m-auto max-h-[85dvh] w-[min(52rem,92vw)] rounded-2xl bg-white p-0 text-black backdrop:bg-black/50 backdrop:backdrop-blur-sm dark:bg-black dark:text-white"
+	oncancel={(e) => {
+		e.preventDefault();
+		close();
+	}}
+	onkeydown={(e) => {
+		if (e.key === 'ArrowRight') showImage(openImage + 1);
+		if (e.key === 'ArrowLeft') showImage(openImage - 1);
+	}}
+	class="m-0 h-dvh max-h-none w-screen max-w-none overflow-y-auto bg-white p-0 text-black backdrop:bg-transparent dark:bg-black dark:text-white"
 >
 	{#if openProject >= 0}
 		{@const project = projects[openProject]}
-		<div class="max-h-[85dvh] overflow-y-auto p-8">
-			<div class="flex items-start justify-between gap-4">
-				{#if project.link}
-					<a
-						href={project.link}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="flex flex-row items-center hover:underline"
+		<div
+			class="sticky top-0 z-10 flex items-center justify-between px-[6vw] py-4 text-white mix-blend-difference"
+		>
+			<span>Projekt {String(openProject + 1).padStart(2, '0')}</span>
+			<button
+				onclick={close}
+				aria-label="Schließen"
+				class="grid size-10 place-items-center rounded-full hover:bg-white/15"
+			>
+				<XIcon />
+			</button>
+		</div>
+
+		<h2
+			class="mx-[6vw] mt-[4vh] mb-[4vh] flex flex-row justify-center text-center text-[11vw] leading-[0.9] font-black tracking-tight wrap-anywhere uppercase"
+		>
+			{#if project.link}
+				<a
+					href={project.link}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="relative underline decoration-[0.06em] underline-offset-[0.08em] hover:decoration-[0.1em]"
+				>
+					{project.title}
+				</a>
+				<ArrowUpRight aria-hidden="true" class="size-[0.2em]" strokeWidth={3} />
+			{:else}
+				{project.title}
+			{/if}
+		</h2>
+
+		{#if project.tags?.length}
+			<ul class="mx-[6vw] flex flex-wrap justify-center gap-2.5">
+				{#each project.tags as tag (tag)}
+					<li
+						class="rounded-full border border-current/15 px-4 py-1.5 text-xs tracking-[0.2em] uppercase opacity-60"
 					>
-						<h2 class="text-3xl font-bold">{project.title}</h2>
-						<SquareArrowOutUpRight size={20} class="ml-2 inline-block" />
-					</a>
-				{:else}
-					<h2 class="text-3xl font-bold">{project.title}</h2>
-				{/if}
-				<button
-					onclick={() => dialog.close()}
-					aria-label="Schließen"
-					class="text-2xl leading-none opacity-60 hover:opacity-100"
-				>
-					<XIcon /></button
-				>
+						{tag}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+
+		<div
+			class="mx-[6vw] my-[6vh] grid items-start gap-[6vw] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
+		>
+			<div
+				class="leading-relaxed whitespace-pre-line md:sticky md:top-20 [&>p+p]:opacity-60 [&>p:first-child]:mt-0 [&>p:first-child]:text-2xl [&>p:first-child]:leading-snug [&>p:first-child]:font-medium"
+			>
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html project.description}
 			</div>
 
-			{#if project.tags?.length}
-				<ul class="mt-4 flex flex-wrap gap-2">
-					{#each project.tags as tag (tag)}
-						<li class="rounded-full border border-current/20 px-3 py-1 text-sm">{tag}</li>
-					{/each}
-				</ul>
-			{/if}
+			<div>
+				<img
+					src={project.large[openImage]}
+					alt=""
+					class="aspect-square w-full rounded-md object-cover"
+				/>
 
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			<p class="mt-6 whitespace-pre-line">{@html project.description}</p>
-
-			<div class="flex flex-row gap-4 overflow-x-scroll sm:gap-8">
-				{#each project.images as image (image)}
-					<img
-						src={image}
-						alt=""
-						class="mt-6 aspect-square h-50 rounded-lg sm:h-100"
-						loading="lazy"
-					/>
-				{/each}
+				{#if project.large.length > 1}
+					<div class="mt-3 flex items-center gap-2">
+						{#snippet arrow(step: number, label: string)}
+							<button
+								onclick={() => showImage(openImage + step)}
+								aria-label={label}
+								class="grid size-8 shrink-0 place-items-center rounded-full border border-current/15 opacity-60 hover:border-current hover:opacity-100"
+							>
+								{step < 0 ? '←' : '→'}
+							</button>
+						{/snippet}
+						{@render arrow(-1, 'Vorheriges Bild')}
+						<div
+							bind:this={thumbs}
+							class="flex flex-1 snap-x snap-mandatory [scrollbar-width:none] gap-2 overflow-x-auto"
+						>
+							{#each project.thumbs as thumb, i (thumb)}
+								<button
+									onclick={() => showImage(i)}
+									aria-label="Bild {i + 1} anzeigen"
+									aria-current={i === openImage}
+									class="aspect-square shrink-0 basis-[calc((100%-1.5rem)/4)] snap-start opacity-40 transition-opacity hover:opacity-100 aria-[current=true]:opacity-100"
+								>
+									<img src={thumb} alt="" loading="lazy" class="size-full rounded object-cover" />
+								</button>
+							{/each}
+						</div>
+						{@render arrow(1, 'Nächstes Bild')}
+					</div>
+				{/if}
 			</div>
 		</div>
 	{/if}
