@@ -1,4 +1,5 @@
 <script lang="ts">
+	import favicon from '$lib/assets/favicon.svg';
 	import { getDirectusAssetUrl } from '$lib/directus/directus';
 	import { scrollState } from '$lib/state/scroll.state.svelte';
 	import { createGrid } from '$lib/webgl/grid';
@@ -105,6 +106,8 @@
 	class:cursor-grab={hoveredProject < 0}
 >
 	<canvas bind:this={canvas} class="absolute inset-0 h-full w-full"></canvas>
+
+	<img src={favicon} alt="Icon" class="absolute top-14 left-10 size-14" />
 
 	<div
 		class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4 md:bottom-16"
