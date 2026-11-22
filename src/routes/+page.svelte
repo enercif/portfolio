@@ -207,7 +207,9 @@
 		{/if}
 
 		<div class="my-[6vh] grid items-start gap-[6vw] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-			<div class="text-xl">
+			<div
+				class="text-lg leading-relaxed text-current/75 [&_em]:text-base [&_em]:text-current/50 [&_li]:relative [&_li]:pl-6 [&_li]:before:absolute [&_li]:before:left-0 [&_li]:before:content-['→'] [&_li+li]:mt-2 [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-current [&_ul]:my-6 [&>p:first-child]:text-2xl [&>p:first-child]:leading-snug [&>p:first-child]:text-current md:[&>p:first-child]:text-3xl"
+			>
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html project.description}
 			</div>
