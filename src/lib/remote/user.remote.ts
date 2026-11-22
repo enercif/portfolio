@@ -11,8 +11,8 @@ export const getUser = query(async () => {
 				'description',
 				'socials',
 				{ signature: ['id'] },
-				{ overlay: ['id'] },
-				{ underlay: ['id'] }
+				{ overlay: ['id', 'type'] },
+				{ underlay: ['id', 'type'] }
 			]
 		})
 	);

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getDirectusAssetUrl } from '$lib/directus/directus';
-	import { createInk } from '$lib/webgl/ink';
+	import { createInk, type Media } from '$lib/webgl/ink';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 
@@ -8,8 +8,8 @@
 
 	let stage: HTMLDivElement;
 	let canvas: HTMLCanvasElement;
-	let over: HTMLVideoElement;
-	let under: HTMLVideoElement;
+	let over: Media;
+	let under: Media;
 	let inked = $state(false);
 
 	// muted als Attribut reicht nicht: nach der Hydration ist die Property nicht
@@ -31,34 +31,43 @@
 	});
 </script>
 
+{#snippet media(
+	file: { id: string; type?: string | null },
+	ref: (el: Media) => void,
+	hide: string | false
+)}
+	{@const cls = ['absolute inset-0 h-full w-full object-cover', hide]}
+	{#if file.type?.startsWith('image/')}
+		<img
+			{@attach ref}
+			class={cls}
+			crossorigin="anonymous"
+			src={getDirectusAssetUrl(file.id)}
+			alt=""
+		/>
+	{:else}
+		<video
+			{@attach ref}
+			{@attach play}
+			class={cls}
+			crossorigin="anonymous"
+			src={getDirectusAssetUrl(file.id)}
+			autoplay
+			loop
+			muted
+			playsinline
+		></video>
+	{/if}
+{/snippet}
+
 <svelte:head><title>About - Enis Erdem Ciftci</title></svelte:head>
 
 <div class="flex h-dvh w-full flex-col bg-white md:flex-row dark:bg-black">
 	<div bind:this={stage} class="relative h-1/2 touch-none overflow-hidden md:h-full md:w-1/2">
 		<!-- Beide Videos bleiben im Layout, sonst pausiert Safari die Dekodierung.
 		     Sichtbar ist im WebGL-Fall nur noch das Canvas darueber. -->
-		<video
-			bind:this={over}
-			class={['absolute inset-0 h-full w-full object-cover', inked && 'opacity-0']}
-			crossorigin="anonymous"
-			src={getDirectusAssetUrl(data.user.overlay.id)}
-			{@attach play}
-			autoplay
-			loop
-			muted
-			playsinline
-		></video>
-		<video
-			bind:this={under}
-			class="absolute inset-0 h-full w-full object-cover opacity-0"
-			crossorigin="anonymous"
-			src={getDirectusAssetUrl(data.user.underlay.id)}
-			{@attach play}
-			autoplay
-			loop
-			muted
-			playsinline
-		></video>
+		{@render media(data.user.overlay, (el) => (over = el), inked && 'opacity-0')}
+		{@render media(data.user.underlay, (el) => (under = el), 'opacity-0')}
 		<canvas
 			bind:this={canvas}
 			class={['absolute inset-0 h-full w-full', !inked && 'hidden']}

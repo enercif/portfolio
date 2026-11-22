@@ -68,9 +68,15 @@ export function strokeAt(s: Stroke, t: number) {
 	};
 }
 
-/** Sichtfeld der Videotextur, damit sie das Canvas füllt statt zu verzerren. */
-function cover(video: HTMLVideoElement, aspect: number) {
-	const ratio = aspect / (video.videoWidth / video.videoHeight || 1);
+export type Media = HTMLVideoElement | HTMLImageElement;
+
+const size = (m: Media) =>
+	m instanceof HTMLVideoElement ? [m.videoWidth, m.videoHeight] : [m.naturalWidth, m.naturalHeight];
+
+/** Sichtfeld der Textur, damit sie das Canvas füllt statt zu verzerren. */
+function cover(media: Media, aspect: number) {
+	const [w, h] = size(media);
+	const ratio = aspect / (w / h || 1);
 	return ratio > 1 ? [1, 1 / ratio] : [ratio, 1];
 }
 
@@ -82,8 +88,8 @@ function cover(video: HTMLVideoElement, aspect: number) {
 export function createInk(
 	canvas: HTMLCanvasElement,
 	container: HTMLElement,
-	over: HTMLVideoElement,
-	under: HTMLVideoElement
+	over: Media,
+	under: Media
 ) {
 	const renderer = new Renderer({ canvas, dpr: Math.min(window.devicePixelRatio, 2) });
 	const gl = renderer.gl;
@@ -298,7 +304,12 @@ export function createInk(
 		const step = delta / 16.667;
 
 		for (const { video, texture, uCover } of sources) {
-			if (video.readyState >= 2) {
+			// Videos jeden Frame neu hochladen, Bilder nur einmal nach dem Laden.
+			const ready =
+				video instanceof HTMLVideoElement
+					? video.readyState >= 2
+					: video.complete && video.naturalWidth > 0 && texture.image !== video;
+			if (ready) {
 				texture.image = video;
 				texture.needsUpdate = true;
 			}
