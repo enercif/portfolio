@@ -19,4 +19,4 @@
 <PageTransition />
 
 <NavPill />
-{@render children()}
+<main>{@render children()}</main>

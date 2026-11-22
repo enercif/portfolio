@@ -34,23 +34,24 @@
 </script>
 
 <nav
-	class="fixed left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-2 backdrop-blur-3xl max-md:bottom-2 sm:px-3 sm:py-3 md:top-14 dark:bg-gray-800/75"
+	class="fixed left-1/2 z-40 -translate-x-1/2 rounded-full bg-gray-200/75 px-2 py-2 backdrop-blur-3xl max-md:bottom-2 md:top-14 md:px-3 md:py-3 dark:bg-gray-800/75"
 >
-	<ul class="flex flex-row items-center gap-1 text-black sm:gap-2 dark:text-white">
+	<ul class="flex flex-row items-center gap-1 md:gap-2">
 		{#each navigationLinks as link (link.href)}
 			{@const isActive = page.url.pathname === link.href}
 			<li>
 				<a
 					href={link.href}
+					aria-current={isActive ? 'page' : undefined}
 					class={[
-						'rounded-full  px-3 py-2 text-sm text-nowrap transition-colors duration-150 sm:text-base',
+						'rounded-full px-3 py-2 text-sm text-nowrap transition-colors duration-150 md:text-base',
 						isActive && 'bg-black text-white dark:bg-white dark:text-black',
 						!isActive && 'hover:bg-black/10 dark:hover:bg-white/20'
 					]}>{link.name}</a
 				>
 			</li>
 		{/each}
-		<li class="mx-1 border-l border-black/15 dark:border-white/15">
+		<li class="mx-1 border-l border-current/15">
 			<button
 				onclick={toggle}
 				aria-label={mode.current === 'dark' ? 'Light mode' : 'Dark mode'}

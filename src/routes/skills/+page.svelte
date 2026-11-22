@@ -57,9 +57,25 @@
 
 <svelte:head><title>Skills - Enis Erdem Ciftci</title></svelte:head>
 
-<div bind:this={root} class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
+<div bind:this={root} class="relative h-dvh w-full overflow-hidden">
+	<h1 class="sr-only">Skills</h1>
+	<!-- Marquee ist reine Optik, Screenreader bekommen die Liste darunter -->
+	<ul class="sr-only">
+		{#each data.skills as { group, skills } (group)}
+			<li>
+				{group}
+				<ul>
+					{#each skills as { name } (name)}
+						<li>{name}</li>
+					{/each}
+				</ul>
+			</li>
+		{/each}
+	</ul>
+
 	<div
-		class="absolute top-1/2 left-1/2 flex w-[150vw] -translate-x-1/2 -translate-y-1/2 rotate-[-10deg] flex-col gap-10 sm:gap-18"
+		aria-hidden="true"
+		class="absolute top-1/2 left-1/2 flex w-[150vw] -translate-x-1/2 -translate-y-1/2 rotate-[-10deg] flex-col gap-10 md:gap-18"
 	>
 		{#each data.skills as { group, skills }, i (group)}
 			<div
@@ -67,23 +83,22 @@
 					'band touch-manipulation transition-[filter] duration-700',
 					active === i ? 'grayscale-0' : 'grayscale'
 				]}
-				role="list"
+				role="presentation"
 				onpointerenter={(e) => onMouse(e, i)}
 				onpointerleave={(e) => onMouse(e, -1)}
 				onpointerdown={(e) => onTap(e, i)}
 			>
 				<div class="track flex w-max items-center gap-10">
 					{#each COPIES as copy (copy)}
-						<div class="flex items-center gap-10" aria-hidden={copy > 0}>
+						<div class="flex items-center gap-10">
 							<span
-								class="rounded-full border border-black/40 px-6 py-2 text-[clamp(0.8rem,1.4vw,1.4rem)] font-medium tracking-[0.3em] text-black/60 uppercase dark:border-white/40 dark:text-white/60"
+								class="rounded-full border border-current/65 px-6 py-2 text-[clamp(0.8rem,1.4vw,1.4rem)] font-medium tracking-[0.3em] text-current/60 uppercase"
 								>{group}</span
 							>
 							{#each skills as { name, color } (name)}
 								<span
 									class="text-[clamp(3rem,5vw,5.5rem)] leading-none font-black tracking-tight uppercase"
-									style:color
-									role="listitem">{name}</span
+									style:color>{name}</span
 								>
 							{/each}
 						</div>

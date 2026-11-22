@@ -100,30 +100,26 @@
 
 <div
 	bind:this={container}
-	class="relative h-dvh w-full touch-none overflow-hidden bg-white select-none dark:bg-black"
+	class="relative h-dvh w-full touch-none overflow-hidden select-none"
 	class:cursor-pointer={hoveredProject >= 0}
 	class:cursor-grab={hoveredProject < 0}
 >
 	<canvas bind:this={canvas} class="absolute inset-0 h-full w-full"></canvas>
 
 	<div
-		class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4 sm:bottom-16"
+		class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4 md:bottom-16"
 	>
 		<div
-			class="absolute inset-0 -z-10 mask-[radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)]
-           backdrop-blur
-           [-webkit-mask-image:radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)]"
+			class="absolute inset-0 -z-10 mask-[radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)] backdrop-blur"
 		></div>
 
-		<h1
-			class="text-4xl font-bold tracking-wide text-nowrap text-black sm:bottom-40 sm:text-8xl dark:text-white"
-		>
+		<h1 class="text-4xl font-bold tracking-wide text-nowrap md:text-8xl">
 			{data.user.name}
 		</h1>
 		<img
 			src={getDirectusAssetUrl(data.user.signature.id)}
 			alt="Signature"
-			class="-mt-6 h-30 sm:-mt-15 sm:h-48"
+			class="-mt-6 h-30 md:-mt-15 md:h-48"
 		/>
 	</div>
 
@@ -158,12 +154,12 @@
 		if (e.key === 'ArrowRight') showImage(openImage + 1);
 		if (e.key === 'ArrowLeft') showImage(openImage - 1);
 	}}
-	class="m-0 h-dvh max-h-none w-screen max-w-none overflow-y-auto bg-white p-0 text-black backdrop:bg-transparent dark:bg-black dark:text-white"
+	class="m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto bg-white px-[6vw] py-0 text-inherit backdrop:bg-transparent dark:bg-black"
 >
 	{#if openProject >= 0}
 		{@const project = projects[openProject]}
 		<div
-			class="sticky top-0 z-10 flex items-center justify-between px-[6vw] py-4 text-white mix-blend-difference"
+			class="sticky top-0 z-10 flex items-center justify-between py-4 text-white mix-blend-difference"
 		>
 			<span>Projekt {String(openProject + 1).padStart(2, '0')}</span>
 			<button
@@ -176,7 +172,7 @@
 		</div>
 
 		<h2
-			class="mx-[6vw] mt-[4vh] mb-[4vh] flex flex-row justify-center text-center text-[11vw] leading-[0.9] font-black tracking-tight wrap-anywhere uppercase"
+			class="my-[4vh] flex flex-row justify-center text-center text-[11vw] leading-[0.9] font-black tracking-tight wrap-anywhere uppercase"
 		>
 			{#if project.link}
 				<a
@@ -194,7 +190,7 @@
 		</h2>
 
 		{#if project.tags?.length}
-			<ul class="mx-[6vw] flex flex-wrap justify-center gap-2.5">
+			<ul class="flex flex-wrap justify-center gap-2.5">
 				{#each project.tags as { name, color } (name)}
 					<li
 						class="flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs tracking-[0.2em] uppercase"
@@ -207,9 +203,7 @@
 			</ul>
 		{/if}
 
-		<div
-			class="mx-[6vw] my-[6vh] grid items-start gap-[6vw] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
-		>
+		<div class="my-[6vh] grid items-start gap-[6vw] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
 			<div
 				class="leading-relaxed whitespace-pre-line md:sticky md:top-20 [&>p+p]:opacity-60 [&>p:first-child]:mt-0 [&>p:first-child]:text-2xl [&>p:first-child]:leading-snug [&>p:first-child]:font-medium"
 			>
@@ -220,7 +214,9 @@
 			<div>
 				<img
 					src={project.large[openImage]}
-					alt=""
+					srcset="{project.images[openImage]} 600w, {project.large[openImage]} 1400w"
+					sizes="(min-width: 768px) 50vw, 88vw"
+					alt="{project.title}, Bild {openImage + 1}"
 					class="aspect-square w-full rounded-md object-cover"
 				/>
 

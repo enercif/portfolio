@@ -30,7 +30,7 @@
 
 <svelte:head><title>Contact - Enis Erdem Ciftci</title></svelte:head>
 
-<div class="relative h-dvh w-full overflow-hidden bg-white dark:bg-black">
+<div class="relative h-dvh w-full overflow-hidden">
 	<canvas bind:this={canvas} class="pointer-events-none absolute inset-0 h-full w-full"></canvas>
 
 	<h1 class="sr-only">Ready to talk?</h1>
@@ -38,13 +38,13 @@
 	<button
 		onclick={copy}
 		class:invisible={!email}
-		class="absolute top-[65%] left-1/2 z-40 -translate-x-1/2 rounded-full border border-black/40 px-6 py-2 text-sm tracking-[0.2em] text-black/70 uppercase transition-colors hover:border-black hover:text-black dark:border-white/40 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+		class="absolute top-[65%] left-1/2 z-40 -translate-x-1/2 rounded-full border border-current/60 px-6 py-2 text-sm tracking-[0.2em] text-current/70 uppercase transition-colors hover:border-current hover:text-current"
 	>
 		{copied ? 'Copied' : email}
 	</button>
 
 	<footer
-		class="absolute z-40 flex w-full flex-col-reverse items-center gap-4 text-xs tracking-wide text-black/30 max-md:top-6 md:bottom-6 md:flex-col dark:text-white/30"
+		class="absolute z-40 flex w-full flex-col-reverse items-center gap-4 text-xs tracking-wide max-md:top-6 md:bottom-6 md:flex-col"
 	>
 		{#if data.user.socials?.length}
 			<ul class="flex gap-5">
@@ -55,7 +55,7 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label={social.type}
-							class="block text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+							class="block text-current/50 transition-colors hover:text-current"
 						>
 							<svg viewBox="0 0 24 24" class="size-5 fill-current" aria-hidden="true">
 								<path d={socialIcons[social.type]} />
@@ -65,6 +65,6 @@
 				{/each}
 			</ul>
 		{/if}
-		Designed &amp; built by {data.user.name}
+		<p class="text-current/30">Designed &amp; built by {data.user.name}</p>
 	</footer>
 </div>
