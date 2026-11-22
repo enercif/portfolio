@@ -44,7 +44,7 @@
 	</button>
 
 	<footer
-		class="absolute top-6 z-40 flex w-full flex-col-reverse items-center gap-4 text-xs tracking-wide text-black/30 md:bottom-6 md:flex-col dark:text-white/30"
+		class="absolute z-40 flex w-full flex-col-reverse items-center gap-4 text-xs tracking-wide text-black/30 max-md:top-6 md:bottom-6 md:flex-col dark:text-white/30"
 	>
 		{#if data.user.socials?.length}
 			<ul class="flex gap-5">
