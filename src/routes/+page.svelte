@@ -195,11 +195,13 @@
 
 		{#if project.tags?.length}
 			<ul class="mx-[6vw] flex flex-wrap justify-center gap-2.5">
-				{#each project.tags as tag (tag)}
+				{#each project.tags as { name, color } (name)}
 					<li
-						class="rounded-full border border-current/15 px-4 py-1.5 text-xs tracking-[0.2em] uppercase opacity-60"
+						class="flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs tracking-[0.2em] uppercase"
+						style:border-color="color-mix(in srgb, {color} 50%, transparent)"
 					>
-						{tag}
+						<span class="size-2 rounded-full" style:background-color={color}></span>
+						<span class="opacity-70">{name}</span>
 					</li>
 				{/each}
 			</ul>

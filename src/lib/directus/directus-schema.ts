@@ -21,8 +21,12 @@ export interface Project {
 	/** @required */
 	description: string;
 	link?: string | null;
+	sort?: number | null;
+	/** @required */
+	status: 'published' | 'draft' | 'archived';
 	/** @required */
 	images: ProjectsFile[] | string[];
+	technologies?: ProjectsTechnology[] | string[];
 }
 
 export interface ProjectsFile {
@@ -30,6 +34,15 @@ export interface ProjectsFile {
 	id: number;
 	projects_id?: Project | string | null;
 	directus_files_id?: DirectusFile | string | null;
+	sort?: number | null;
+}
+
+export interface ProjectsTechnology {
+	/** @primaryKey */
+	id: number;
+	projects_id?: Project | string | null;
+	technologies_id?: Technology | string | null;
+	sort?: number | null;
 }
 
 export interface Skill {
@@ -39,6 +52,26 @@ export interface Skill {
 	group: string;
 	/** @required */
 	skills: Array<{ name: string; color: string }>;
+	sort?: number | null;
+	technologies?: SkillsTechnology[] | string[];
+}
+
+export interface SkillsTechnology {
+	/** @primaryKey */
+	id: number;
+	skills_id?: Skill | string | null;
+	technologies_id?: Technology | string | null;
+	sort?: number | null;
+}
+
+export interface Technology {
+	/** @primaryKey */
+	id: number;
+	/** @required */
+	name: string;
+	/** @required */
+	color: string;
+	sort?: number | null;
 }
 
 export interface User {
@@ -550,7 +583,10 @@ export interface Schema {
 	experience: Experience[];
 	projects: Project[];
 	projects_files: ProjectsFile[];
+	projects_technologies: ProjectsTechnology[];
 	skills: Skill[];
+	skills_technologies: SkillsTechnology[];
+	technologies: Technology[];
 	user: User;
 	directus_access: DirectusAccess[];
 	directus_activity: DirectusActivity[];
@@ -587,7 +623,10 @@ export enum CollectionNames {
 	experience = 'experience',
 	projects = 'projects',
 	projects_files = 'projects_files',
+	projects_technologies = 'projects_technologies',
 	skills = 'skills',
+	skills_technologies = 'skills_technologies',
+	technologies = 'technologies',
 	user = 'user',
 	directus_access = 'directus_access',
 	directus_activity = 'directus_activity',
