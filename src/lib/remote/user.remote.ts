@@ -10,6 +10,7 @@ export const getUser = query(async () => {
 				'name',
 				'email',
 				'description',
+				'socials',
 				{ signature: ['id'] },
 				{ overlay: ['id'] },
 				{ underlay: ['id'] }

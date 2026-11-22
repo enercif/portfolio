@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createPoints } from '$lib/points';
+	import { socialIcons } from '$lib/socials';
 	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 
@@ -38,8 +39,27 @@
 	</button>
 
 	<footer
-		class="absolute bottom-6 w-full text-center text-xs tracking-wide text-black/30 dark:text-white/30"
+		class="absolute bottom-6 z-40 flex w-full flex-col items-center gap-4 text-xs tracking-wide text-black/30 dark:text-white/30"
 	>
+		{#if data.user.socials?.length}
+			<ul class="flex gap-5">
+				{#each data.user.socials as social (social.link)}
+					<li>
+						<a
+							href={social.link}
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label={social.type}
+							class="block text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+						>
+							<svg viewBox="0 0 24 24" class="size-5 fill-current" aria-hidden="true">
+								<path d={socialIcons[social.type]} />
+							</svg>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		{/if}
 		Designed &amp; built by {data.user.name}
 	</footer>
 </div>

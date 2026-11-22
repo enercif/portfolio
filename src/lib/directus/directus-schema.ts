@@ -56,6 +56,7 @@ export interface User {
 	underlay: DirectusFile | string;
 	/** @required */
 	description: string;
+	socials?: Array<{ type: 'github' | 'linkedin' | 'instagram' | 'x' | 'xing' | 'dribbble' | 'youtube'; link: string }> | null;
 }
 
 export interface DirectusAccess {
