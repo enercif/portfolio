@@ -8,7 +8,6 @@ export const getUser = query(async () => {
 		readSingleton('user', {
 			fields: [
 				'name',
-				'email',
 				'description',
 				'socials',
 				{ signature: ['id'] },

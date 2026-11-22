@@ -8,13 +8,17 @@
 
 	let canvas: HTMLCanvasElement;
 	let copied = $state(false);
+	let email = $state('');
 	let timer: ReturnType<typeof setTimeout>;
 
-	onMount(() => createPoints(canvas, 'Ready to talk?'));
+	onMount(() => {
+		email = atob(data.email);
+		return createPoints(canvas, 'Ready to talk?');
+	});
 
 	async function copy() {
 		try {
-			await navigator.clipboard.writeText(data.user.email);
+			await navigator.clipboard.writeText(email);
 			copied = true;
 			clearTimeout(timer);
 			timer = setTimeout(() => (copied = false), 2000);
@@ -33,9 +37,10 @@
 
 	<button
 		onclick={copy}
+		class:invisible={!email}
 		class="absolute top-[65%] left-1/2 z-40 -translate-x-1/2 rounded-full border border-black/40 px-6 py-2 text-sm tracking-[0.2em] text-black/70 uppercase transition-colors hover:border-black hover:text-black dark:border-white/40 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
 	>
-		{copied ? 'Copied' : data.user.email}
+		{copied ? 'Copied' : email}
 	</button>
 
 	<footer
