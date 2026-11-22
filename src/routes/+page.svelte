@@ -110,16 +110,16 @@
 		class="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center px-20 py-4 md:bottom-16"
 	>
 		<div
-			class="absolute inset-0 -z-10 mask-[radial-gradient(ellipse_at_center,black_0%,black_40%,transparent_80%)] backdrop-blur"
+			class="absolute inset-0 -z-10 mask-[linear-gradient(to_right,transparent,rgb(0_0_0/0.4)_8%,black_22%,black_78%,rgb(0_0_0/0.4)_92%,transparent),linear-gradient(transparent,rgb(0_0_0/0.4)_12%,black_35%,black_45%,rgb(0_0_0/0.4)_88%,transparent)] mask-intersect backdrop-blur-sm md:-inset-x-40 dark:bg-black/70"
 		></div>
 
-		<h1 class="text-4xl font-bold tracking-wide text-nowrap md:text-8xl">
+		<h1 class="text-4xl font-bold tracking-wide text-nowrap text-black md:text-8xl dark:text-white">
 			{data.user.name}
 		</h1>
 		<img
 			src={getDirectusAssetUrl(data.user.signature.id)}
 			alt="Signature"
-			class="-mt-6 h-30 md:-mt-15 md:h-48"
+			class="-mt-6 h-30 brightness-0 md:-mt-15 md:h-48 dark:invert"
 		/>
 	</div>
 
