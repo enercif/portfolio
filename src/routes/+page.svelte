@@ -207,14 +207,12 @@
 		{/if}
 
 		<div class="my-[6vh] grid items-start gap-[6vw] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-			<div
-				class="leading-relaxed whitespace-pre-line md:sticky md:top-20 [&>p+p]:opacity-60 [&>p:first-child]:mt-0 [&>p:first-child]:text-2xl [&>p:first-child]:leading-snug [&>p:first-child]:font-medium"
-			>
+			<div class="text-xl">
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html project.description}
 			</div>
 
-			<div>
+			<div class="max-w-xl">
 				<img
 					src={project.large[openImage]}
 					srcset="{project.images[openImage]} 600w, {project.large[openImage]} 1400w"
