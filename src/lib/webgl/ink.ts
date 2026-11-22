@@ -157,7 +157,20 @@ export function createInk(
 			gl.deleteFramebuffer(target.buffer);
 			gl.deleteTexture(target.texture.texture); // ogl räumt die Textur nicht mit ab
 		}
-		ink = [0, 1].map(() => new RenderTarget(gl, { width: w, height: h, depth: false }));
+
+		const float = renderer.isWebgl2 && renderer.extensions['EXT_color_buffer_float'];
+		ink = [0, 1].map(
+			() =>
+				new RenderTarget(gl, {
+					width: w,
+					height: h,
+					depth: false,
+					...(float && {
+						type: (gl as WebGL2RenderingContext).HALF_FLOAT,
+						internalFormat: (gl as WebGL2RenderingContext).RGBA16F
+					})
+				})
+		);
 		uTexel.value.set([1 / w, 1 / h]);
 	}
 
